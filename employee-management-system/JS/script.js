@@ -387,7 +387,7 @@ function addEmployee() {
     $.ajax({
       url: "PHP/Employee/Employee.php",
       type: "POST",
-        data: JSON.stringify(allEmployeesDataArr),
+      data: JSON.stringify(allEmployeesDataArr),
       //data: allEmployeesDataArr,
       success: function (response) {
         $("#global-save").prop("disabled", true);

@@ -5,7 +5,6 @@ $action='';
 //EXTRACT DATA
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) 
 {
-
     $employeeDetails = new stdClass;
 
     //FOR INSERT
@@ -31,7 +30,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
        
     }  
 
-    //FOR UPDATE
+    //FOR EDIT
     else
     {
         //SEPARATE REQUIRED DATA
@@ -45,7 +44,6 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
         $employeeDetails->email = $email;
         $employeeDetails->department = $department;
 
-    
         //STANDARDIZE DATA FORMAT
         $dataFormatted= [
 
@@ -55,10 +53,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 
         //GET VALUE OF ACTION PARAMETER
         $action =  $dataFormatted["action"];
- 
     }
-
-
 }
 
 //VALIDATE DATA
@@ -72,70 +67,56 @@ global $action;
 
 if($action == 'insert'){
 
-    global $dataFormatted;
+global $dataFormatted;
 
-    $firstName = $lastName = $email = $department = [];
+$firstName = [];
+$lastName = [];
+$email = [];
+$department = [];
 
-        //GET VALUES OF FIELDS FOR EACH ROW oF INSERT
-        for($i=0; $i< sizeof($dataFormatted['data']) ; $i++)
-        {
-        
-            $firstName[] = $dataFormatted['data'][$i]->firstName;
-            $lastName[] = $dataFormatted['data'][$i]->lastName;
-            $email[] = $dataFormatted['data'][$i]->email;
-            $department[] = $dataFormatted['data'][$i]->department;
-            
+    for($i=0; $i< sizeof($dataFormatted['data']) ; $i++)
+    {
+      $firstName[] = $dataFormatted['data'][$i]->firstName;
+      $lastName[] = $dataFormatted['data'][$i]->lastName;
+      $email[] = $dataFormatted['data'][$i]->email;
+      $department[] = $dataFormatted['data'][$i]->department;
+    }
 
-        }
+    //VALIDATE NAMES
+    foreach ($firstName as $key => $value)
+    {
+           if (empty($value))
+              array_push($errors, "First name cannot be empty");
 
-        //VALIDATE NAMES
-        foreach ($firstName as $key => $value)
-        {
-
-            if (empty($value))
-                array_push($errors, "First name cannot be empty");
-
-                if (!preg_match ("/^[a-zA-z]*$/", $value)) 
-                {  
-                    array_push($errors, "Names should contain only alphabets");
-                }
-            
-
-        }
-
-        foreach ($lastName as $key => $value)
-        {
-
-            if (empty($value))
-                array_push($errors, "Last name cannot be empty");
-                
-                if (!preg_match ("/^[a-zA-z]*$/", $value)) 
-                {  
-                    array_push($errors, "Names should contain only alphabets");
-                }
-        }
-
-        //VALIDATE EMAIL
-        foreach ($email as $key => $value)
-        {
-
-            if (filter_var($value, FILTER_VALIDATE_EMAIL) == false) 
-            {
-            array_push($errors, "Please enter a valid email address");
-            
+            if (!preg_match ("/^[a-zA-z]*$/", $value)){  
+                array_push($errors, "Names should contain only alphabets");
             }
+    }
 
-        }
-
-        //VALIDATE DEPARTMENT
-        foreach ($department as $key => $value)
-        {
-
-            if ($value == 0) {
-                array_push($errors, "Please select a department");
+    foreach ($lastName as $key => $value)
+    {
+        if (empty($value))
+            array_push($errors, "Last name cannot be empty");
+            
+            if (!preg_match ("/^[a-zA-z]*$/", $value)){  
+                array_push($errors, "Names should contain only alphabets");
             }
+    }
 
+    //VALIDATE EMAIL
+    foreach ($email as $key => $value){
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) == false) {
+         array_push($errors, "Please enter a valid email address");
         }
+
+    }
+
+    //VALIDATE DEPARTMENT
+    foreach ($department as $key => $value){
+        if ($value == 0) {
+            array_push($errors, "Please select a department");
+        }
+    }
 
 
 }
@@ -158,10 +139,8 @@ else{
     //VALIDATE NAMES
     foreach ($namesField as $key => $value)
     {
-       
         if (empty($value))
           array_push($errors, "$key cannot be empty");
-
     }
 
     if (!preg_match ("/^[a-zA-z]*$/", $firstName) || !preg_match ("/^[a-zA-z]*$/", $lastName)) 
@@ -170,16 +149,13 @@ else{
     }
 
    //VALIDATE EMAIL
-   if (filter_var($email, FILTER_VALIDATE_EMAIL) == false) 
-   {
+   if (filter_var($email, FILTER_VALIDATE_EMAIL) == false){
      array_push($errors, "Please enter a valid email address");
-   
    }
 
     //VALIDATE DEPARTMENT
     if ($department == 0) {
         array_push($errors, "Please select a department");
-       
     }
 
 }
@@ -192,10 +168,8 @@ else{
   
   //IF ERRORS FOUND PRINT ERROR LIST
   else{
-
       foreach($errors as $error)
       {
-
           echo "$error <br/>";
       }
   }
