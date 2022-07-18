@@ -3,16 +3,13 @@
 $action='';
 
 //EXTRACT DATA
-if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) 
+if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 {
-    $employeeDetails = new stdClass;
+    $data = json_decode(stripslashes(file_get_contents("php://input")));
 
     //FOR INSERT
-    if(count($_POST) === 0)
+    if($data)
     {
-        
-        $data = json_decode(stripslashes(file_get_contents("php://input")));
-       
         //GET VALUE OF ACTION PARAMETER
         $action = $data[0]->action;
         
@@ -21,39 +18,36 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
         {
             unset($data[$i]->action);
         }
+    }
 
-        //STANDARDIZE DATA FORMAT
-        $dataFormatted= [
-            "data" => $data,
-            "action" => $action,
-        ];
-       
-    }  
-
+    
     //FOR EDIT
     else
     {
+        $data = new stdClass;
+
         //SEPARATE REQUIRED DATA
         $firstName = 	$_POST['firstName'];
         $lastName =  	$_POST['lastName'];
         $email = 	  	$_POST['email'];
         $department =   $_POST['department'];
 
-        $employeeDetails->firstName = $firstName;
-        $employeeDetails->lastName =  $lastName ;
-        $employeeDetails->email = $email;
-        $employeeDetails->department = $department;
-
-        //STANDARDIZE DATA FORMAT
-        $dataFormatted= [
-
-            "data" => $employeeDetails,
-            "action" => $_POST['action'],
-        ];
+        $data->firstName = $firstName;
+        $data->lastName =  $lastName ;
+        $data->email = $email;
+        $data->department = $department;
 
         //GET VALUE OF ACTION PARAMETER
-        $action =  $dataFormatted["action"];
+        $action =  $_POST['action'];
     }
+
+    //STANDARDIZE DATA FORMAT
+    $dataFormatted = 
+    [
+        "data" => $data,
+        "action" => $action,
+    ];
+   
 }
 
 //VALIDATE DATA
@@ -67,12 +61,10 @@ global $action;
 
 if($action == 'insert'){
 
-global $dataFormatted;
+    global $dataFormatted;
 
-$firstName = [];
-$lastName = [];
-$email = [];
-$department = [];
+    //GET VALUE OF EACH FIELD OF EACH ROW
+    $firstName = $lastName = $email = $department = [];
 
     for($i=0; $i< sizeof($dataFormatted['data']) ; $i++)
     {
@@ -85,40 +77,33 @@ $department = [];
     //VALIDATE NAMES
     foreach ($firstName as $key => $value)
     {
-           if (empty($value))
-              array_push($errors, "First name cannot be empty");
+           if (empty($value)) 
+           array_push($errors, "First name cannot be empty");
 
-            if (!preg_match ("/^[a-zA-z]*$/", $value)){  
-                array_push($errors, "Names should contain only alphabets");
-            }
+            if (!preg_match ("/^[a-zA-z]*$/", $value))
+            array_push($errors, "Names should contain only alphabets");
     }
 
     foreach ($lastName as $key => $value)
     {
         if (empty($value))
-            array_push($errors, "Last name cannot be empty");
+        array_push($errors, "Last name cannot be empty");
             
-            if (!preg_match ("/^[a-zA-z]*$/", $value)){  
-                array_push($errors, "Names should contain only alphabets");
-            }
+        if (!preg_match ("/^[a-zA-z]*$/", $value))
+        array_push($errors, "Names should contain only alphabets");
     }
 
     //VALIDATE EMAIL
     foreach ($email as $key => $value){
-        if (filter_var($value, FILTER_VALIDATE_EMAIL) == false) {
-         array_push($errors, "Please enter a valid email address");
-        }
-
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) == false)
+          array_push($errors, "Please enter a valid email address");
     }
 
     //VALIDATE DEPARTMENT
     foreach ($department as $key => $value){
-        if ($value == 0) {
-            array_push($errors, "Please select a department");
-        }
+        if ($value == 0)
+          array_push($errors, "Please select a department");
     }
-
-
 }
 
 //FOR UPDATE
@@ -128,35 +113,28 @@ else{
     global $lastName;
     global $email;
     global $department;
-  
-    $firstName = trim($firstName);
-    $lastName = trim($lastName);
-    $email = trim($email);
-    $department = trim($department);
 
-    $namesField = array("First Name"=>$firstName, "Last Name"=>$lastName);
+    $nameFields = array("First Name"=>$firstName, "Last Name"=>$lastName);
 
     //VALIDATE NAMES
-    foreach ($namesField as $key => $value)
+    foreach ($nameFields as $key => $value)
     {
         if (empty($value))
           array_push($errors, "$key cannot be empty");
     }
 
     if (!preg_match ("/^[a-zA-z]*$/", $firstName) || !preg_match ("/^[a-zA-z]*$/", $lastName)) 
-    {  
         array_push($errors, "Names should contain only alphabets");
-    }
+
 
    //VALIDATE EMAIL
-   if (filter_var($email, FILTER_VALIDATE_EMAIL) == false){
+   if (filter_var($email, FILTER_VALIDATE_EMAIL) == false)
      array_push($errors, "Please enter a valid email address");
-   }
+
 
     //VALIDATE DEPARTMENT
-    if ($department == 0) {
+    if ($department == 0)
         array_push($errors, "Please select a department");
-    }
 
 }
 

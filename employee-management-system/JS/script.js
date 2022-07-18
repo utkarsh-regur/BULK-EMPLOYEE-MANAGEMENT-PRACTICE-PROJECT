@@ -15,7 +15,7 @@ $(document).ready(function () {
        <option value="3">Management</option>
    </select>
 </td>
-<td class="new-row-actions"><button class="cancel-new-row btn-close my-2" title="Remove row"></button><span class="reset-new-row reset-icon my-2" title="Reset row"><img class="reset-icon" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/undefined/external-refresh-arrows-dreamstale-lineal-dreamstale.png"/></span></td>
+<td class="new-row-actions"><button class="cancel-new-row btn-close my-2" title="Remove row"></button></td>
 </tr>`;
 
   //ADD NEW ROW ON BTN CLICK
@@ -569,9 +569,6 @@ $("#tbody").on("click", ".save", function () {
             `<span class='alert alert-primary mt-3'>Employee updated successfully</span>`
           );
         } else {
-          // $(".notification").html(
-          //   `<span class='alert alert-primary mt-3'>Could not update record</span>`
-          // );
           $(".notification").html(
             "<div class='alert alert-primary'>" + response + "</div>"
           );
