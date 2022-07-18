@@ -1,9 +1,8 @@
 <?php
 
-include '../DataBaseConnection/dbConnection.php';
-include '../Validation/Validation.php';
-include '../Crud/Crud.php';
-
+include __DIR__ . '../../DataBaseConnection/dbConnection.php';
+include __DIR__ . '../../Validation/Validation.php';
+include __DIR__ . '../../Crud/Crud.php';
 
 
 //DISPLAY ALL EMPLOYEE RECORDS

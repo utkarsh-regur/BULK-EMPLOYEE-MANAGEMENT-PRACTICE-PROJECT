@@ -12,9 +12,8 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
     if(count($_POST) === 0) //$_POST RETURNING EMPTY ARRAY FOR INSERT
     {
         
-        $data = stripslashes(file_get_contents("php://input"));
-        $data= json_decode($data);
-
+        $data = json_decode(stripslashes(file_get_contents("php://input")));
+       
         //GET VALUE OF ACTION PARAMETER
         $action = $data[0]->action;
         
@@ -22,12 +21,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
         for ($i = 0; $i < sizeof($data); $i++) 
         {
             unset($data[$i]->action);
-
-            $firstName = $data[$i]->firstName;
-            $lastName = $data[$i]->lastName;
-            $email = $data[$i]->email;
-            $department = $data[$i]->department;
-     
+    
         }
 
         //STANDARDIZE DATA FORMAT
@@ -74,8 +68,9 @@ function isValidData()
 //ERROR LIST
 $errors = array();
 
-//FOR INSERT
-if(count($_POST)==0){
+global $action;
+
+if($action == 'insert'){
 
 global $dataFormatted;
 
@@ -100,9 +95,7 @@ $department = [];
     {
 
            if (empty($value))
-           { 
               array_push($errors, "First name cannot be empty");
-           }
 
             if (!preg_match ("/^[a-zA-z]*$/", $value)) 
             {  
@@ -117,6 +110,7 @@ $department = [];
 
         if (empty($value))
             array_push($errors, "Last name cannot be empty");
+            
             if (!preg_match ("/^[a-zA-z]*$/", $value)) 
             {  
                 array_push($errors, "Names should contain only alphabets");
