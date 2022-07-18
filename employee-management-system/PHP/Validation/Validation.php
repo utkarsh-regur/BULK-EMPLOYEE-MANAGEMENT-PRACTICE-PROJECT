@@ -2,14 +2,14 @@
 
 $action='';
 
-//CHECKING ACTION PARAMETER VALUE
+//EXTRACT DATA
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) 
 {
 
     $employeeDetails = new stdClass;
 
-    //EXTRACT DATA
-    if(count($_POST) === 0) //$_POST RETURNING EMPTY ARRAY FOR INSERT
+    //FOR INSERT
+    if(count($_POST) === 0)
     {
         
         $data = json_decode(stripslashes(file_get_contents("php://input")));
@@ -21,7 +21,6 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
         for ($i = 0; $i < sizeof($data); $i++) 
         {
             unset($data[$i]->action);
-    
         }
 
         //STANDARDIZE DATA FORMAT
@@ -32,6 +31,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
        
     }  
 
+    //FOR UPDATE
     else
     {
         //SEPARATE REQUIRED DATA
@@ -72,72 +72,70 @@ global $action;
 
 if($action == 'insert'){
 
-global $dataFormatted;
+    global $dataFormatted;
 
-$firstName = [];
-$lastName = [];
-$email = [];
-$department = [];
+    $firstName = $lastName = $email = $department = [];
 
-    for($i=0; $i< sizeof($dataFormatted['data']) ; $i++)
-    {
-       
-      $firstName[] = $dataFormatted['data'][$i]->firstName;
-      $lastName[] = $dataFormatted['data'][$i]->lastName;
-      $email[] = $dataFormatted['data'][$i]->email;
-      $department[] = $dataFormatted['data'][$i]->department;
-         
-
-    }
-
-    //VALIDATE NAMES
-    foreach ($firstName as $key => $value)
-    {
-
-           if (empty($value))
-              array_push($errors, "First name cannot be empty");
-
-            if (!preg_match ("/^[a-zA-z]*$/", $value)) 
-            {  
-                array_push($errors, "Names should contain only alphabets");
-            }
-        
-
-    }
-
-    foreach ($lastName as $key => $value)
-    {
-
-        if (empty($value))
-            array_push($errors, "Last name cannot be empty");
-            
-            if (!preg_match ("/^[a-zA-z]*$/", $value)) 
-            {  
-                array_push($errors, "Names should contain only alphabets");
-            }
-    }
-
-    //VALIDATE EMAIL
-    foreach ($email as $key => $value)
-    {
-
-        if (filter_var($value, FILTER_VALIDATE_EMAIL) == false) 
+        //GET VALUES OF FIELDS FOR EACH ROW oF INSERT
+        for($i=0; $i< sizeof($dataFormatted['data']) ; $i++)
         {
-         array_push($errors, "Please enter a valid email address");
         
+            $firstName[] = $dataFormatted['data'][$i]->firstName;
+            $lastName[] = $dataFormatted['data'][$i]->lastName;
+            $email[] = $dataFormatted['data'][$i]->email;
+            $department[] = $dataFormatted['data'][$i]->department;
+            
+
         }
 
-    }
+        //VALIDATE NAMES
+        foreach ($firstName as $key => $value)
+        {
 
-    //VALIDATE DEPARTMENT
-    foreach ($department as $key => $value)
-    {
+            if (empty($value))
+                array_push($errors, "First name cannot be empty");
 
-        if ($value == 0) {
-            array_push($errors, "Please select a department");
+                if (!preg_match ("/^[a-zA-z]*$/", $value)) 
+                {  
+                    array_push($errors, "Names should contain only alphabets");
+                }
+            
+
         }
 
-    }
+        foreach ($lastName as $key => $value)
+        {
+
+            if (empty($value))
+                array_push($errors, "Last name cannot be empty");
+                
+                if (!preg_match ("/^[a-zA-z]*$/", $value)) 
+                {  
+                    array_push($errors, "Names should contain only alphabets");
+                }
+        }
+
+        //VALIDATE EMAIL
+        foreach ($email as $key => $value)
+        {
+
+            if (filter_var($value, FILTER_VALIDATE_EMAIL) == false) 
+            {
+            array_push($errors, "Please enter a valid email address");
+            
+            }
+
+        }
+
+        //VALIDATE DEPARTMENT
+        foreach ($department as $key => $value)
+        {
+
+            if ($value == 0) {
+                array_push($errors, "Please select a department");
+            }
+
+        }
 
 
 }
