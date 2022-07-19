@@ -357,7 +357,7 @@ function addEmployee() {
     }
   }
 
-  if (uniqueEmailInput(inputEmails) == false) {
+  /*if (uniqueEmailInput(inputEmails) == false) {
     $(".notification").html(
       `<span class='alert alert-danger mt-3'>More than one employees cannot have the same email, please enter unique email for each employee</span>`
     );
@@ -382,40 +382,41 @@ function addEmployee() {
     $(".notification").html(
       "<span class='alert alert-danger mt-3'>Last Name should consist of only alphabets</span>"
     );
-  } else {
-    let successMsg = "";
-    $.ajax({
-      url: "PHP/Employee/Employee.php",
-      type: "POST",
-      data: JSON.stringify(allEmployeesDataArr),
-      //data: allEmployeesDataArr,
-      success: function (response) {
-        $("#global-save").prop("disabled", true);
-        $(".cancel-new-row").hide();
-        if (response == 1) {
-          let numofEmployeesMsg = "";
+  } */
+  // else {
+  let successMsg = "";
+  $.ajax({
+    url: "PHP/Employee/Employee.php",
+    type: "POST",
+    data: JSON.stringify(allEmployeesDataArr),
+    //data: allEmployeesDataArr,
+    success: function (response) {
+      $("#global-save").prop("disabled", true);
+      $(".cancel-new-row").hide();
+      if (response == 1) {
+        let numofEmployeesMsg = "";
 
-          if (allEmployeesDataArr.length > 1) {
-            numofEmployeesMsg = "employees";
-          } else {
-            numofEmployeesMsg = "employee";
-          }
-          successMsg = `<span class='alert alert-dark mt-3'>New ${numofEmployeesMsg} added successfully!!</span>`;
-
-          $(".notification").html(successMsg);
+        if (allEmployeesDataArr.length > 1) {
+          numofEmployeesMsg = "employees";
         } else {
-          $(".notification").html(
-            "<div class='alert alert-primary'>" + response + "</div>"
-          );
+          numofEmployeesMsg = "employee";
         }
+        successMsg = `<span class='alert alert-dark mt-3'>New ${numofEmployeesMsg} added successfully!!</span>`;
 
-        showEmploeesData();
-      },
-      complete: function () {
-        $("#global-save").prop("disabled", true);
-      },
-    });
-  }
+        $(".notification").html(successMsg);
+      } else {
+        $(".notification").html(
+          "<div class='alert alert-primary'>" + response + "</div>"
+        );
+      }
+
+      showEmploeesData();
+    },
+    complete: function () {
+      $("#global-save").prop("disabled", true);
+    },
+  });
+  // }
 }
 
 //DELETE EMPLOYEE RECORD

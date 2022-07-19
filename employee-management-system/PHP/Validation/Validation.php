@@ -75,22 +75,18 @@ if($action == 'insert'){
     }
 
     //VALIDATE NAMES
-    foreach ($firstName as $key => $value)
-    {
-           if (empty($value)) 
-           array_push($errors, "First name cannot be empty");
+    $nameFields = array("First Name"=>$firstName, "Last Name"=>$lastName);
 
-            if (!preg_match ("/^[a-zA-z]*$/", $value))
+    foreach ($nameFields as $key => $value){
+        foreach ($value as $val => $v){
+           if (empty($v)) 
+           array_push($errors, "$key cannot be empty");
+        }
+
+        foreach ($value as $key => $k){
+            if (!preg_match ("/^[a-zA-z]*$/", $k))
             array_push($errors, "Names should contain only alphabets");
-    }
-
-    foreach ($lastName as $key => $value)
-    {
-        if (empty($value))
-        array_push($errors, "Last name cannot be empty");
-            
-        if (!preg_match ("/^[a-zA-z]*$/", $value))
-        array_push($errors, "Names should contain only alphabets");
+        }
     }
 
     //VALIDATE EMAIL
@@ -117,8 +113,7 @@ else{
     $nameFields = array("First Name"=>$firstName, "Last Name"=>$lastName);
 
     //VALIDATE NAMES
-    foreach ($nameFields as $key => $value)
-    {
+    foreach ($nameFields as $key => $value){
         if (empty($value))
           array_push($errors, "$key cannot be empty");
     }
@@ -126,16 +121,13 @@ else{
     if (!preg_match ("/^[a-zA-z]*$/", $firstName) || !preg_match ("/^[a-zA-z]*$/", $lastName)) 
         array_push($errors, "Names should contain only alphabets");
 
-
    //VALIDATE EMAIL
    if (filter_var($email, FILTER_VALIDATE_EMAIL) == false)
      array_push($errors, "Please enter a valid email address");
 
-
     //VALIDATE DEPARTMENT
     if ($department == 0)
         array_push($errors, "Please select a department");
-
 }
 
   //IF NO ERRORS EXECUTE CRUD OPERATION
