@@ -5,11 +5,33 @@ $action='';
 //EXTRACT DATA
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 {
-    $data = json_decode(stripslashes(file_get_contents("php://input")));
+
+    //FOR EDIT
+    if($_POST)
+    {
+        $data = new stdClass;
+
+        //SET GLOBAL VARIABLES
+        $firstName = 	$_POST['firstName'];
+        $lastName =  	$_POST['lastName'];
+        $email = 	  	$_POST['email'];
+        $department =   $_POST['department'];
+
+        //SEPARATE REQUIRED DATA
+        $data->firstName = $firstName;
+        $data->lastName =  $lastName ;
+        $data->email = $email;
+        $data->department = $department;
+
+        //GET VALUE OF ACTION PARAMETER
+        $action =  $_POST['action'];
+    }
 
     //FOR INSERT
-    if($data)
+    else
     {
+        $data = json_decode(stripslashes(file_get_contents("php://input")));
+
         //GET VALUE OF ACTION PARAMETER
         $action = $data[0]->action;
         
@@ -18,27 +40,6 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
         {
             unset($data[$i]->action);
         }
-    }
-
-    
-    //FOR EDIT
-    else
-    {
-        $data = new stdClass;
-
-        //SEPARATE REQUIRED DATA
-        $firstName = 	$_POST['firstName'];
-        $lastName =  	$_POST['lastName'];
-        $email = 	  	$_POST['email'];
-        $department =   $_POST['department'];
-
-        $data->firstName = $firstName;
-        $data->lastName =  $lastName ;
-        $data->email = $email;
-        $data->department = $department;
-
-        //GET VALUE OF ACTION PARAMETER
-        $action =  $_POST['action'];
     }
 
     //STANDARDIZE DATA FORMAT
@@ -78,13 +79,13 @@ if($action == 'insert'){
     $nameFields = array("First Name"=>$firstName, "Last Name"=>$lastName);
 
     foreach ($nameFields as $key => $value){
-        foreach ($value as $val => $v){
-           if (empty($v)) 
+        foreach ($value as $val => $name){
+           if (empty($name)) 
            array_push($errors, "$key cannot be empty");
         }
 
-        foreach ($value as $key => $k){
-            if (!preg_match ("/^[a-zA-z]*$/", $k))
+        foreach ($value as $key => $name){
+            if (!preg_match ("/^[a-zA-z]*$/", $name))
             array_push($errors, "Names should contain only alphabets");
         }
     }
