@@ -35,7 +35,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
         //GET VALUE OF ACTION PARAMETER
         $action = $data[0]->action;
         
-        //REMOVE ACTION PARAMETER FROM EACH ENTRY AND STORE VALUES IN OBJECT
+        //REMOVE ACTION PARAMETER FROM EACH ENTRY
         for ($i = 0; $i < sizeof($data); $i++) 
         {
             unset($data[$i]->action);
@@ -60,6 +60,7 @@ $errors = array();
 
 global $action;
 
+//INSERT VALIDATION
 if($action == 'insert'){
 
     global $dataFormatted;
@@ -103,7 +104,7 @@ if($action == 'insert'){
     }
 }
 
-//FOR UPDATE
+//UPDATE VALIDATION
 else{
 
     global $firstName;
@@ -133,16 +134,14 @@ else{
 
   //IF NO ERRORS EXECUTE CRUD OPERATION
   if (count($errors) === 0)
-  {
-      return true;
-  }
+    return true;
+
   
   //IF ERRORS FOUND PRINT ERROR LIST
-  else{
-      foreach($errors as $error)
-      {
-          echo "$error <br/>";
-      }
+  else
+  {
+    foreach($errors as $error)
+      echo "$error <br/>";
   }
 }
 
